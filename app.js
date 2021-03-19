@@ -8,6 +8,11 @@ const session = require('express-session')
 const db = require('./db/db')
 const User = require('./db/user')
 const Message = require('./db/message')
+const sequelize = require('./db/db')
+const SequelizeStore = require('connect-session-sequelize')(session.Store)
+const store = new SequelizeStore({
+  db: sequelize,
+})
 User.hasMany(Message)
 
 app.use('*', cors())
