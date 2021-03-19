@@ -22,7 +22,8 @@ app.use(router)
 app.use(
   session({
     secret: 'cutiewithabooty',
-    store: store,
+    resave: true,
+    saveUninitialized: true
   })
 )
 
@@ -32,7 +33,10 @@ app.get('/', (req, res) => {
 
 app.listen(port, () => {
   console.log('listening on port ' + port)
-  db.sync({})
+  db.sync({
+    // force: true,
+    logging: false
+  })
 })
 
 store.sync()
