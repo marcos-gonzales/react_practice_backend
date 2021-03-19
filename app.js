@@ -38,3 +38,5 @@ app.listen(port, () => {
     logging: false
   })
 })
+
+store.sync()
