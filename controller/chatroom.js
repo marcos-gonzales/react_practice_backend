@@ -11,31 +11,7 @@ exports.getUser = (req, res, next) => {
   })
 }
 
-exports.createUser = (req, res, next) => {
-  const username = req.body.username
-  const password = req.body.password
-  const errors = validationResult(req)
 
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() })
-  }
-
-  User.create({
-    username: username,
-    password: password,
-  })
-    .then((user) => {
-      user.save()
-      console.log('user saved.', user)
-      res.json({ message: 'Successfully created user' })
-    })
-    .catch((err) => {
-      if (err) {
-        console.log(err)
-        res.json({ message: 'oops something went wrong.' })
-      }
-    })
-}
 
 exports.postSignin = (req, res, next) => {
   const username = req.body.signInUsername

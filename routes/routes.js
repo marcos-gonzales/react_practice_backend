@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const chatroomController = require('../controller/chatroom')
+const authController = require('../controller/auth')
 const { body } = require('express-validator')
 
 router.get('/createuser', chatroomController.getUser)
@@ -14,9 +15,11 @@ router.post(
     .isLength({ min: 5 })
     .withMessage('oops password must have 5 characters'),
 
-  chatroomController.createUser
+  authController.createUser
 )
 
 router.post('/signin', chatroomController.postSignin)
+
+
 
 module.exports = router
