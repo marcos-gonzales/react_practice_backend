@@ -59,6 +59,7 @@ exports.postSignin = (req, res, next) => {
           res.json({ errorMessage: 'oops password does not match' });
           console.log('oops no match');
         }
+        res.json({ successMessage: 'success!' });
         console.log('success!!');
         console.log(req.session);
       });
