@@ -32,3 +32,48 @@ exports.createUser = (req, res, next) => {
     res.json({message: 'Oops something went wrong.'})
   })
 };
+
+// exports.postSignin = (req, res, next) => {
+//   const username = req.body.signInUsername
+//   const password = req.body.signInPassword
+
+//   User.findOne({
+//     where: {
+//       username: username,
+//       password: password,
+//     },
+//   }).then((user) => {
+//     if (!user) {
+//       console.log('no users with that password')
+//       res.json({ errorMessage: 'Invalid credentials.' })
+//     } else {
+//       console.log('success', user)
+//       res.json({ successMessage: 'You have successfully logged in.' })
+//       console.log(req.user)
+//       console.log(user)
+//       console.log(User)
+//       return user
+//     }
+//   })
+// };
+
+exports.postSignin = (req, res, next) => {
+  const password = req.body.signInPassword
+  const username = req.body.signInUsername
+
+  User.findOne({ where: {username: username}})
+   .then(user => {
+    if(!user) console.log('oops no user found.')
+  return user
+  })
+  .then(user => {
+    console.log(user)
+    bcrypt.compare(password, user.password)
+    .then(match => {
+      if(!match) console.log('oops no match')
+      console.log('success!!')
+    })
+  })
+  .catch(err => console.log(err))
+  .catch(err => console.log(err))
+}

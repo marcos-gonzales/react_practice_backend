@@ -13,26 +13,4 @@ exports.getUser = (req, res, next) => {
 
 
 
-exports.postSignin = (req, res, next) => {
-  const username = req.body.signInUsername
-  const password = req.body.signInPassword
 
-  User.findOne({
-    where: {
-      username: username,
-      password: password,
-    },
-  }).then((user) => {
-    if (!user) {
-      console.log('no users with that password')
-      res.json({ errorMessage: 'Invalid credentials.' })
-    } else {
-      console.log('success', user)
-      res.json({ successMessage: 'You have successfully logged in.' })
-      console.log(req.user)
-      console.log(user)
-      console.log(User)
-      return user
-    }
-  })
-}

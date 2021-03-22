@@ -18,7 +18,7 @@ router.post(
   authController.createUser
 )
 
-router.post('/signin', chatroomController.postSignin)
+router.post('/signin', authController.postSignin)
 
 
 
