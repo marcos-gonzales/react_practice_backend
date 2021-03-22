@@ -47,29 +47,34 @@ exports.postSignin = (req, res, next) => {
     .then((user) => {
       if (!user) {
         console.log('oops no user found.');
-        return res.json({
-          errorMessage: 'oops no user found.',
-        });
+        res.json({ errorMessage: 'oops no user found.' });
+        next();
       }
       return user;
     })
     .then((user) => {
+      if (!user) next();
       bcrypt.compare(password, user.password).then((match) => {
+        if (!user) next();
         if (!match) {
-          res.json({ errorMessage: 'oops password does not match' });
           console.log('oops no match');
+          res.json({ errorMessage: 'oops password does not match' });
+          next();
         }
-        res.json({ successMessage: 'success!' });
-        console.log('success!!');
-        console.log(req.session);
+        req.session.isLoggedIn = true;
+        req.session.user = user;
+        req.session.save((err) => {
+          if (err) console.log(err);
+          res.json({ isLoggedIn: true, successMessage: 'you have logged in.' });
+        });
       });
     })
     .catch((err) => {
-      res.json({ errorMessage: 'something unknown went wrong.' });
+      next();
       console.log(err);
     })
     .catch((err) => {
-      res.json({ errorMessage: 'something unknown went wrong.' });
+      next();
       console.log(err);
     });
 };

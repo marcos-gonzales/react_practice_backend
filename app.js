@@ -27,6 +27,10 @@ app.use(
 );
 app.use(router);
 
+app.use((req, res, next) => {
+  if (req.session.isLoggedIn) console.log('working');
+});
+
 app.listen(port, () => {
   console.log('listening on port ' + port);
   db.sync({
