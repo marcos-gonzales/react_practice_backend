@@ -14,7 +14,6 @@ router.post(
   body('password')
     .isLength({ min: 5 })
     .withMessage('oops password must have 5 characters'),
-
   authController.createUser
 );
 
@@ -26,7 +25,6 @@ router.post(
   body('signInPassword')
     .isLength({ min: 5 })
     .withMessage('oops password needs to be at least 5 characters'),
-
   authController.postSignin
 );
 
