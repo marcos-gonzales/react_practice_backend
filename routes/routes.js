@@ -14,12 +14,9 @@ router.post(
   body('password')
     .isLength({ min: 5 })
     .withMessage('oops password must have 5 characters'),
-
-  authController.createUser
 )
 
 router.post('/signin', authController.postSignin)
-
 
 
 module.exports = router
