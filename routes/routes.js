@@ -16,17 +16,7 @@ router.post(
     .withMessage('oops password must have 5 characters'),
 )
 
-router.post(
-  '/signin',
-  body('username')
-    .isLength({ min: 3 })
-    .withMessage('oops username must be at least 3 characters'),
-  body('password')
-    .isLength({ min: 5 })
-    .withMessage('oops password must have at least 5 characters'),
-  chatroomController.postSignin
-)
-
+router.post('/signin', authController.postSignin)
 
 
 module.exports = router
