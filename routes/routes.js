@@ -4,7 +4,8 @@ const chatroomController = require('../controller/chatroom');
 const authController = require('../controller/auth');
 const { body } = require('express-validator');
 
-router.get('/createuser', chatroomController.getUser);
+router.get('/getuser', chatroomController.getAllUsers);
+router.get('/getuser/:user/:userid', chatroomController.getUser);
 
 router.post(
   '/createuser',

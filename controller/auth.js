@@ -55,17 +55,21 @@ exports.postSignin = (req, res, next) => {
     .then((user) => {
       if (!user) next();
       bcrypt.compare(password, user.password).then((match) => {
-        if (!user) next();
+        if (!user) return next();
         if (!match) {
-          console.log('oops no match');
+          console.log('oops password is wrong.');
           res.json({ errorMessage: 'oops password does not match' });
-          next();
+          return next();
         }
         req.session.isLoggedIn = true;
         req.session.user = user;
         req.session.save((err) => {
           if (err) console.log(err);
-          res.json({ isLoggedIn: true, successMessage: 'you have logged in.' });
+          res.json({
+            isLoggedIn: true,
+            successMessage: 'you have logged in.',
+            user: user,
+          });
         });
       });
     })
