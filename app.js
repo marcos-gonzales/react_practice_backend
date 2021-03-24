@@ -14,6 +14,7 @@ const store = new SequelizeStore({
   db: sequelize,
 });
 User.hasMany(Message);
+Message.belongsTo(User);
 
 app.use('*', cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -28,7 +29,9 @@ app.use(
 app.use(router);
 
 app.use((req, res, next) => {
-  if (req.session.isLoggedIn) console.log('working');
+  if (req.session.isLoggedIn) {
+    console.log(req.session);
+  }
 });
 
 app.listen(port, () => {
