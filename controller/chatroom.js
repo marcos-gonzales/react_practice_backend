@@ -20,9 +20,6 @@ exports.getAllUsers = async (req, res, next) => {
 };
 
 exports.getUser = (req, res, next) => {
-  console.log('went here');
-  console.log(req);
-  console.log(req.params);
   Message.findAll({ where: { userId: req.params.userid } })
     .then((userAndMessage) => {
       if (!userAndMessage) {
