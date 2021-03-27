@@ -38,7 +38,6 @@ exports.postSignin = (req, res, next) => {
   const password = req.body.signInPassword;
   const username = req.body.signInUsername;
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }

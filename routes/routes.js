@@ -4,7 +4,7 @@ const chatroomController = require('../controller/chatroom');
 const authController = require('../controller/auth');
 const { body } = require('express-validator');
 
-router.get('/getuser', chatroomController.getAllUsers);
+router.get('/getallusers', chatroomController.getAllUsers);
 router.get('/getuser/:user/:userid', chatroomController.getUser);
 
 router.post(
@@ -28,5 +28,7 @@ router.post(
     .withMessage('oops password needs to be at least 5 characters'),
   authController.postSignin
 );
+
+router.post('/sendmessage', chatroomController.postSendMessage);
 
 module.exports = router;
