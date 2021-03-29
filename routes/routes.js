@@ -5,6 +5,7 @@ const authController = require('../controller/auth');
 const { body } = require('express-validator');
 
 router.get('/getallusers', chatroomController.getAllUsers);
+router.get('/getallmessages', chatroomController.getAllMesssages);
 router.get('/getuser/:user/:userid', chatroomController.getUser);
 
 router.post(
@@ -29,6 +30,6 @@ router.post(
   authController.postSignin
 );
 
-router.post('/sendmessage', chatroomController.postSendMessage);
+router.post('/sendmessage/:userid', chatroomController.postSendMessage);
 
 module.exports = router;
