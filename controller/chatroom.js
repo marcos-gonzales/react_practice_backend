@@ -11,7 +11,6 @@ exports.getAllUsers = async (req, res, next) => {
         return next();
       }
       res.json({ messages: user });
-      console.log(user);
     })
     .catch((err) => {
       console.log(err);
@@ -26,7 +25,6 @@ exports.getAllMesssages = (req, res, next) => {
         res.json({ message: 'oops no messages' });
         return next();
       }
-      console.log(messages);
       res.json({ message: messages });
     })
     .catch((err) => {
@@ -41,7 +39,6 @@ exports.getUser = (req, res, next) => {
         res.json({ message: 'oops something went wrong.' });
         return next();
       }
-      console.log(userAndMessage);
       res.json({ message: userAndMessage, user: userAndMessage });
     })
     .catch((err) => {

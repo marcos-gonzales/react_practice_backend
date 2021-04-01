@@ -1,8 +1,8 @@
 const express = require('express');
-const app = express();
 const port = process.env.PORT || 4000;
 const router = require('./routes/routes');
 const cors = require('cors');
+const app = express();
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const db = require('./db/db');
@@ -13,6 +13,14 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const store = new SequelizeStore({
   db: sequelize,
 });
+
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+
+io.on('connection', () => {
+  console.log('connected');
+});
+
 User.hasMany(Message);
 Message.belongsTo(User);
 
@@ -27,12 +35,6 @@ app.use(
   })
 );
 app.use(router);
-
-app.use((req, res, next) => {
-  if (req.session.isLoggedIn) {
-    console.log(req.session);
-  }
-});
 
 app.listen(port, () => {
   console.log('listening on port ' + port);
