@@ -50,13 +50,11 @@ exports.getUser = (req, res, next) => {
 exports.postSendMessage = (req, res, next) => {
   const message = req.body.userMessage;
   const userId = req.params.userid;
-  console.log(req.params);
   Message.create({
     message: message,
     userId: userId,
   })
     .then((message) => {
-      console.log(message);
       res.json({ message: 'success!', message: message });
     })
     .catch((err) => {
