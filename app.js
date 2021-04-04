@@ -15,7 +15,32 @@ app.use(
     saveUninitialized: true,
   })
 );
-app.use(router);
+
+const server = require('http').createServer(app);
+const options = {
+  cors: true,
+  origins: ['http://127.0.0.1:3000'],
+  'force new connection': true,
+};
+const io = require('socket.io')(server, options);
+
+io.on('connection', (socket) => {
+  const currentlyConnected = [];
+  currentlyConnected.push(socket.id);
+  console.log(currentlyConnected);
+  console.log('connecting..', socket.id);
+
+  socket.on('chat', (chat) => {
+    console.log(chat);
+  });
+
+  socket.on('new_message', (data) => {
+    io.sockets.emit('new_message', data);
+  });
+  socket.on('remove', (socket) => {
+    console.log('user disconnected!');
+  });
+});
 
 const db = require('./db/db');
 const User = require('./db/user');
@@ -29,28 +54,7 @@ const store = new SequelizeStore({
 User.hasMany(Message);
 Message.belongsTo(User);
 
-require('events').EventEmitter.prototype._maxListeners = 70;
-require('events').defaultMaxListeners = 70;
-
-const server = require('http').createServer(app);
-const options = {
-  cors: true,
-  origins: ['http://127.0.0.1:3000'],
-};
-const io = require('socket.io')(server, options);
-
-io.on('connection', (socket) => {
-  console.log('connecting..');
-
-  socket.on('message', (message) => {
-    console.log('-------------message', message);
-  });
-  socket.emit('updateBubbles', { message: true });
-
-  socket.on('remove', () => {
-    console.log('user disconnected!');
-  });
-});
+app.use(router);
 
 server.listen(port, () => {
   console.log('listening on port ' + port);
