@@ -34,9 +34,14 @@ io.on('connection', (socket) => {
     console.log(chat);
   });
 
+  socket.on('typing', (typing) => {
+    io.sockets.emit('typing', typing);
+  });
+
   socket.on('new_message', (data) => {
     io.sockets.emit('new_message', data);
   });
+
   socket.on('remove', (socket) => {
     console.log('user disconnected!');
   });
