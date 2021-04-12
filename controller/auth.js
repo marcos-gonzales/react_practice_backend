@@ -1,18 +1,40 @@
+require('dotenv').config();
 const db = require('../db/db');
 const User = require('../db/user');
 const Message = require('../db/message');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const sgMail = require('@sendgrid/mail');
 
 exports.createUser = (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
   const errors = validationResult(req);
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  const msg = {
+    to: 'markymarrk@gmail.com',
+    from: 'markymarrk@gmail.com',
+    subject: 'Welcome!',
+    text: `Hello ${username} get ready for lots of fun!`,
+    html: `<strong>Please refer below to our terms and conditions</strong> <p>Hello ${username}.</p>`,
+  };
 
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
+
+  (async () => {
+    try {
+      await sgMail.send(msg);
+    } catch (error) {
+      console.error(error);
+
+      if (error.response) {
+        console.error(error.response.body);
+      }
+    }
+  })();
 
   return bcrypt
     .hash(password, saltRounds)
@@ -26,7 +48,6 @@ exports.createUser = (req, res, next) => {
     .then((user) => {
       user.save();
       res.json({ message: 'You have successfully created an account.' });
-      console.log(user);
     })
     .catch((err) => {
       console.log(err);
