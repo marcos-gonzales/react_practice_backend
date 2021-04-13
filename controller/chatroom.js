@@ -48,6 +48,7 @@ exports.getUser = (req, res, next) => {
 };
 
 exports.postSendMessage = (req, res, next) => {
+  console.log('went in here.');
   const message = req.body.userMessage;
   const userId = req.params.userid;
   Message.create({

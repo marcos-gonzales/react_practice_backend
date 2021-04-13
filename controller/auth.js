@@ -8,12 +8,15 @@ const saltRounds = 10;
 const sgMail = require('@sendgrid/mail');
 
 exports.createUser = (req, res, next) => {
+  console.log(req.body);
   const username = req.body.username;
+  const email = req.body.email;
   const password = req.body.password;
   const errors = validationResult(req);
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
   const msg = {
-    to: 'markymarrk@gmail.com',
+    to: email,
     from: 'markymarrk@gmail.com',
     subject: 'Welcome!',
     text: `Hello ${username} get ready for lots of fun!`,
@@ -24,18 +27,6 @@ exports.createUser = (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  (async () => {
-    try {
-      await sgMail.send(msg);
-    } catch (error) {
-      console.error(error);
-
-      if (error.response) {
-        console.error(error.response.body);
-      }
-    }
-  })();
-
   return bcrypt
     .hash(password, saltRounds)
     .then((hash) => {
@@ -43,11 +34,30 @@ exports.createUser = (req, res, next) => {
       return User.create({
         username: username,
         password: hash,
+        email: email,
       });
     })
     .then((user) => {
-      user.save();
-      res.json({ message: 'You have successfully created an account.' });
+      res.json({
+        message: 'You have successfully created an account.',
+        user: user,
+        isLoggedIn: true,
+      });
+      return user.save();
+    })
+    .then((sendMail) => {
+      //Sendgrid sends email to user that signed up.
+      console.log('went in here.');
+      sgMail.send(msg).then(
+        () => {},
+        (error) => {
+          console.error(error);
+
+          if (error.response) {
+            console.error(error.response.body);
+          }
+        }
+      );
     })
     .catch((err) => {
       console.log(err);
