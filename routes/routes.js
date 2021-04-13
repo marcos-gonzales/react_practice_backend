@@ -16,6 +16,7 @@ router.post(
   body('password')
     .isLength({ min: 5 })
     .withMessage('oops password must have 5 characters'),
+  body('email').isEmail(),
   authController.createUser
 );
 
@@ -30,6 +31,10 @@ router.post(
   authController.postSignin
 );
 
-router.post('/sendmessage/:userid', chatroomController.postSendMessage);
+router.post(
+  '/sendmessage/:userid',
+  body('usermessage').notEmpty(),
+  chatroomController.postSendMessage
+);
 
 module.exports = router;
