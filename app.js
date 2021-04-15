@@ -19,7 +19,7 @@ app.use(
 const server = require('http').createServer(app);
 const options = {
   cors: true,
-  origins: ['http://127.0.0.1:3000'],
+  origins: ['https://chatroom-express-db.herokuapp.com/'],
   'force new connection': true,
 };
 const io = require('socket.io')(server, options);
