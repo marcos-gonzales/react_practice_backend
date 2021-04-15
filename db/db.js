@@ -7,7 +7,7 @@ if (process.env.NODE_ENV === 'production') {
   sequelize = new Sequelize(
     process.env.JAWSDB_DB,
     process.env.JAWSDB_USERNAME,
-    process.env.JAWDB_PASSWORD,
+    process.env.JAWSDB_PASSWORD,
     {
       host: process.env.JAWSDB_HOST,
       dialect: 'mysql',
