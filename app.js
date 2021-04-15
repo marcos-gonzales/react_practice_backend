@@ -5,7 +5,7 @@ const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
 const session = require('express-session');
-app.use(cors());
+app.use('*', cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(
@@ -19,7 +19,7 @@ app.use(
 const server = require('http').createServer(app);
 const options = {
   cors: true,
-  origins: ['http://127.0.0.1:4000'],
+  origins: ['https://infallible-pasteur-b0e6fc.netlify.app'],
   'force new connection': true,
 };
 const io = require('socket.io')(server, options);
