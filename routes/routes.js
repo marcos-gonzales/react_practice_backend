@@ -37,4 +37,8 @@ router.post(
   chatroomController.postSendMessage
 );
 
+router.post('/resetpassword', authController.resetPassword);
+
+router.post('/resetpassword/:tokenId', authController.finalResetPassword);
+
 module.exports = router;
