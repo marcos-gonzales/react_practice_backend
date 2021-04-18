@@ -6,6 +6,8 @@ const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const crypto = require('crypto');
 
 exports.createUser = (req, res, next) => {
   console.log(req.body);
@@ -13,7 +15,6 @@ exports.createUser = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const errors = validationResult(req);
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
   const msg = {
     to: email,
@@ -73,7 +74,7 @@ exports.postSignin = (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  User.findOne({ where: { username: username } })
+  User.findAll({ where: { username: username } })
     .then((user) => {
       if (!user) {
         console.log('oops no user found.');
@@ -111,4 +112,57 @@ exports.postSignin = (req, res, next) => {
       next();
       console.log(err);
     });
+};
+
+exports.resetPassword = (req, res, next) => {
+  const email = req.body.emailValue;
+  console.log(email);
+  const token = crypto.randomBytes(48).toString('hex');
+  console.log(token);
+  const msg = {
+    to: email,
+    from: 'markymarrk@gmail.com',
+    subject: 'You sent a request to change passwords',
+    text: `Hello, we received a request to change your password. Please click this link to <strong>Reset your password by clicking <a href="localhost:4000/resetpassword/${token}"</strong>`,
+    html: `<p>Your reset token will expire in one hour. Better get to it..</p>
+    <p>${token}</p>
+    <br>
+    <p>Hello, we received a request to change your password. Please copy and paste this token on chat.io where you sent the request <strong>${token}</strong></p>`,
+  };
+
+  User.findOne({
+    where: {
+      email: email,
+    },
+  })
+    .then((user) => {
+      if (!user) {
+        console.log('no user found!');
+        return next();
+      }
+      sgMail.send(msg).then(
+        () => {
+          res.json({
+            url: token,
+            user: user,
+            message:
+              'We have sent an email to the address entered above. You may need to look in your spam folder.',
+          });
+        },
+        (error) => {
+          console.error(error);
+          if (error.response) {
+            console.error(error.response.body);
+          }
+        }
+      );
+    })
+    .catch((err) => {
+      if (err) console.log(err);
+    });
+};
+
+exports.finalResetPassword = (req, re, next) => {
+  console.log('went here.');
+  console.log(req.body);
 };
