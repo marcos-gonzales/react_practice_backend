@@ -170,6 +170,8 @@ exports.finalResetPassword = (req, res, next) => {
   const expirationToken = req.body.user.userResetTokenExpiration;
   const email = req.body.user.userEmail;
   const newPassword = req.body.newPassword;
+  console.log(token);
+  console.log(expirationToken);
   // Check if the current date is less than 1 hour from when user received token.
   if (expirationToken > token) {
     User.findOne({
