@@ -27,7 +27,6 @@ const io = require('socket.io')(server, options);
 io.on('connection', (socket) => {
   const currentlyConnected = [];
   currentlyConnected.push(socket.id);
-  console.log(currentlyConnected);
   console.log('connecting..', socket.id);
 
   socket.on('chat', (chat) => {
