@@ -64,7 +64,7 @@ server.listen(port, () => {
   console.log('listening on port ' + port);
   db.sync({
     //Forcing db to wipe everything clean
-    force: true,
+    // force: true,
     logging: false,
   });
 });
