@@ -10,7 +10,6 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const crypto = require('crypto');
 
 exports.createUser = (req, res, next) => {
-  console.log(req.body);
   const username = req.body.username;
   const email = req.body.email;
   const password = req.body.password;
@@ -48,7 +47,6 @@ exports.createUser = (req, res, next) => {
     })
     .then((sendMail) => {
       //Sendgrid sends email to user that signed up.
-      console.log('went in here.');
       sgMail.send(msg).then(
         () => {},
         (error) => {
@@ -74,10 +72,9 @@ exports.postSignin = (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  User.findAll({ where: { username: username } })
+  User.findOne({ where: { username: username } })
     .then((user) => {
       if (!user) {
-        console.log('oops no user found.');
         res.json({ errorMessage: 'oops no user found.' });
         next();
       }
@@ -88,7 +85,6 @@ exports.postSignin = (req, res, next) => {
       bcrypt.compare(password, user.password).then((match) => {
         if (!user) return next();
         if (!match) {
-          console.log('oops password is wrong.');
           res.json({ errorMessage: 'oops password does not match' });
           return next();
         }
@@ -116,9 +112,7 @@ exports.postSignin = (req, res, next) => {
 
 exports.resetPassword = (req, res, next) => {
   const email = req.body.emailValue;
-  console.log(email);
   const token = crypto.randomBytes(48).toString('hex');
-  console.log(token);
   const msg = {
     to: email,
     from: 'markymarrk@gmail.com',
@@ -134,35 +128,72 @@ exports.resetPassword = (req, res, next) => {
     where: {
       email: email,
     },
-  })
-    .then((user) => {
-      if (!user) {
-        console.log('no user found!');
-        return next();
-      }
-      sgMail.send(msg).then(
-        () => {
-          res.json({
-            url: token,
-            user: user,
-            message:
-              'We have sent an email to the address entered above. You may need to look in your spam folder.',
-          });
-        },
-        (error) => {
-          console.error(error);
-          if (error.response) {
-            console.error(error.response.body);
-          }
+  }).then((user) => {
+    if (!user) {
+      res.json({ message: 'oops token doesnt match.' });
+      return next();
+    }
+    let currentTime = Date.now();
+    let oneHourFromNow = currentTime + 3600;
+    user.resetToken = currentTime;
+    user.resetTokenExpiration = oneHourFromNow;
+    user.save();
+    res.json({
+      url: token,
+      userEmail: user.email,
+      userResetToken: user.resetToken,
+      userResetTokenExpiration: user.resetTokenExpiration,
+      message:
+        'We have sent an email to the address entered above. You may need to look in your spam folder.',
+    });
+  });
+  sgMail
+    .send(msg)
+    .then(
+      () => {},
+      (error) => {
+        console.error(error);
+        if (error.response) {
+          console.error(error.response.body);
         }
-      );
-    })
+      }
+    )
     .catch((err) => {
       if (err) console.log(err);
     });
 };
 
-exports.finalResetPassword = (req, re, next) => {
-  console.log('went here.');
-  console.log(req.body);
+exports.finalResetPassword = (req, res, next) => {
+  const token = req.body.user.userResetToken;
+  const expirationToken = req.body.user.userResetTokenExpiration;
+  const email = req.body.user.userEmail;
+  const newPassword = req.body.newPassword;
+  if (expirationToken > token) {
+    User.findOne({
+      where: {
+        email: email,
+      },
+    }).then((user) => {
+      if (!user) return next();
+      bcrypt
+        .hash(newPassword, saltRounds)
+        .then((hash) => {
+          // Store hash in your password DB.
+          user.password = hash;
+          user.resetToken = null;
+          user.resetTokenExpiration = null;
+          return user.save();
+        })
+        .then((main) => {
+          res.json({
+            user: user,
+            message: 'You have successfully changed your password!!',
+          });
+        });
+    });
+  } else {
+    res.json({
+      message: 'Oops your token is expired.',
+    });
+  }
 };
