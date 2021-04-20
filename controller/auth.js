@@ -133,7 +133,9 @@ exports.resetPassword = (req, res, next) => {
       res.json({ message: 'oops token doesnt match.' });
       return next();
     }
+    // check current time
     let currentTime = Date.now();
+    // add 1 hour from current time.
     let oneHourFromNow = currentTime + 3600;
     user.resetToken = currentTime;
     user.resetTokenExpiration = oneHourFromNow;
@@ -164,10 +166,11 @@ exports.resetPassword = (req, res, next) => {
 };
 
 exports.finalResetPassword = (req, res, next) => {
-  const token = req.body.user.userResetToken;
+  const token = new Date();
   const expirationToken = req.body.user.userResetTokenExpiration;
   const email = req.body.user.userEmail;
   const newPassword = req.body.newPassword;
+  // Check if the current date is less than 1 hour from when user received token.
   if (expirationToken > token) {
     User.findOne({
       where: {
