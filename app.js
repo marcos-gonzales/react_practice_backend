@@ -41,6 +41,7 @@ io.on('connection', (socket) => {
     io.sockets.emit('new_message', data);
   });
 
+  //TODO: WHEN A USER LEAVES DISPLAY USER LEAVING..
   socket.on('remove', (socket) => {
     console.log('user disconnected!');
   });
@@ -64,7 +65,7 @@ server.listen(port, () => {
   console.log('listening on port ' + port);
   db.sync({
     //Forcing db to wipe everything clean
-    force: true,
+    // force: true,
     logging: false,
   });
 });
