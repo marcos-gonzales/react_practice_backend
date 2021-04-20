@@ -63,7 +63,7 @@ app.use(router);
 server.listen(port, () => {
   console.log('listening on port ' + port);
   db.sync({
-    // force: true,
+    force: true,
     logging: false,
   });
 });
