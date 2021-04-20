@@ -166,7 +166,7 @@ exports.resetPassword = (req, res, next) => {
 };
 
 exports.finalResetPassword = (req, res, next) => {
-  const token = new Date();
+  const token = Date.now();
   const expirationToken = req.body.user.userResetTokenExpiration;
   const email = req.body.user.userEmail;
   const newPassword = req.body.newPassword;
