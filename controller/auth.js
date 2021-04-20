@@ -117,11 +117,11 @@ exports.resetPassword = (req, res, next) => {
     to: email,
     from: 'markymarrk@gmail.com',
     subject: 'You sent a request to change passwords',
-    text: `Hello, we received a request to change your password. Please click this link to <strong>Reset your password by clicking <a href="localhost:4000/resetpassword/${token}"</strong>`,
+    text: `Hello, we received a request to change your password. `,
     html: `<p>Your reset token will expire in one hour. Better get to it..</p>
     <p>${token}</p>
     <br>
-    <p>Hello, we received a request to change your password. Please copy and paste this token on chat.io where you sent the request <strong>${token}</strong></p>`,
+    <p>Hello, we received a request to change your password. Please copy and paste the token above.</p>`,
   };
 
   User.findOne({
