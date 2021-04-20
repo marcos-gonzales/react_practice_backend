@@ -41,6 +41,7 @@ io.on('connection', (socket) => {
     io.sockets.emit('new_message', data);
   });
 
+  //TODO: WHEN A USER LEAVES DISPLAY USER LEAVING..
   socket.on('remove', (socket) => {
     console.log('user disconnected!');
   });
