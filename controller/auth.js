@@ -134,9 +134,10 @@ exports.resetPassword = (req, res, next) => {
       return next();
     }
     // check current time
-    let currentTime = Date.now();
+    let currentTime = new Date();
     // add 1 hour from current time.
-    let oneHourFromNow = currentTime + 3600;
+    let oneHourFromNow = new Date();
+    oneHourFromNow.setHours(getHours() + 1);
     user.resetToken = currentTime;
     user.resetTokenExpiration = oneHourFromNow;
     user.save();
@@ -166,7 +167,7 @@ exports.resetPassword = (req, res, next) => {
 };
 
 exports.finalResetPassword = (req, res, next) => {
-  const token = Date.now();
+  const token = new Date();
   const expirationToken = req.body.user.userResetTokenExpiration;
   const email = req.body.user.userEmail;
   const newPassword = req.body.newPassword;
