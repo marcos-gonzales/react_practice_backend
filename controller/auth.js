@@ -137,7 +137,7 @@ exports.resetPassword = (req, res, next) => {
     let currentTime = new Date();
     // add 1 hour from current time.
     let oneHourFromNow = new Date();
-    oneHourFromNow.setHours(getHours() + 1);
+    oneHourFromNow.setHours(oneHourFromNow.getHours() + 1);
     user.resetToken = currentTime;
     user.resetTokenExpiration = oneHourFromNow;
     user.save();
